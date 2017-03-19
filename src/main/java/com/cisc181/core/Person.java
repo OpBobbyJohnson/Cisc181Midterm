@@ -110,14 +110,36 @@ public abstract class Person implements java.io.Serializable {
 	public int PrintAge() {
 		Calendar today = Calendar.getInstance();
 		Calendar birthDate = Calendar.getInstance();
-
 		int age = 0;
 		birthDate.setTime(this.DOB);
 		if (birthDate.after(today)) {
 			throw new IllegalArgumentException("Can't be born in the future");
 		}
 		age = today.get(Calendar.YEAR) - birthDate.get(Calendar.YEAR);
-
+		Calendar c = Calendar.getInstance();
+		c.setTime(DOB);
+		c.add(Calendar.YEAR, 100);
+		try{
+			if(c.compareTo(today)<0) {
+				throw new PersonException("this person is too old.");
+			}
+		}catch(PersonException e){
+			System.out.println("Program failed because "+e);
+		}
+		
+		
+		String regex = "^\\(?([0-9]{3})\\)?[-.\\s]?([0-9]{3})[-.\\s]?([0-9]{4})$";
+		 
+		Pattern pattern = Pattern.compile(regex);
+		try{
+			 Matcher matcher = pattern.matcher(phone_number);
+			if (!matcher.matches()){
+				throw new PersonException("this number is invalid.");
+			}
+		}catch(PersonException ex){
+			System.out.println("Program failed because " + ex);
+		}
+		
 		// If birth date is greater than todays date (after 2 days adjustment of
 		// leap year) then decrement age one year
 		if ((birthDate.get(Calendar.DAY_OF_YEAR) - today.get(Calendar.DAY_OF_YEAR) > 3)
